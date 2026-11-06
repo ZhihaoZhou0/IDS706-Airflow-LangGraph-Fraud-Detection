@@ -6,6 +6,7 @@ import { ProjectsPage } from './pages/ProjectsPage'
 import { SetupPage } from './pages/SetupPage'
 import { SolutionLoopPage } from './pages/SolutionLoopPage'
 import { LabLoopPage } from './pages/LabLoopPage'
+import { IEEEFraudPage } from './pages/IEEEFraudPage'
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
         <Route path="/guide" element={<GuidePage />} />
         <Route path="/lab-loop" element={<LabLoopPage />} />
         <Route path="/solution-loop" element={<SolutionLoopPage />} />
+        <Route path="/ieee-fraud" element={<IEEEFraudPage />} />
         <Route path="/advanced" element={<ProjectsPage />} />
         <Route path="/projects/:projectId" element={<ProjectDetailPage />} />
         <Route path="/projects/:projectId/new" element={<SetupPage />} />

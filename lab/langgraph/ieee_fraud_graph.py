@@ -46,6 +46,7 @@ class FraudState(TypedDict, total=False):
     verdict: dict
     feedback: dict
     holdout_metrics: dict
+    decision_trace: list
     stop_reason: str
     output_path: str
     steps: Annotated[list, operator.add]
@@ -182,7 +183,12 @@ def node_publish(state: FraudState) -> dict:
     out = Path(state.get('output_path', '/repo/artifacts/ieee_fraud/agent_results.json'))
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(payload, indent=2), encoding='utf-8')
-    return {'steps': [{'node': 'publish_results', 'path': str(out)}]}
+    return {
+    'steps': [{'node': 'publish_results', 'path': str(out)}],
+    'decision_trace': payload['decision_trace'],
+    'history': payload['history'],
+    'holdout_metrics': payload['holdout_metrics'],
+}
 
 
 def build_graph():

@@ -89,3 +89,8 @@ airflow-webserver.pid
 /holdout_frac*
 /seed*
 /steps*
+
+/datasets/ieee_fraud/sample_backup/
+/backups/
+# Local backup files
+*.bak

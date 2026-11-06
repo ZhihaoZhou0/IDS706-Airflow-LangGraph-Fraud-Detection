@@ -69,6 +69,10 @@ services:
     env_file:
       - ../.env
     environment:
+      ANALYTICS_DB_HOST: analytics-db
+      ANALYTICS_DB_NAME: fraud_analytics
+      ANALYTICS_DB_USER: analytics
+      ANALYTICS_DB_PASSWORD: ${ANALYTICS_DB_PASSWORD:-analytics_dev}
       SERVICE_TOKEN: ${SERVICE_TOKEN:-dev-service-token}
       GATEWAY_DEFAULT_MODE: ${GATEWAY_DEFAULT_MODE:-live}
       MOCK_DATASET_SERVICE: ${MOCK_DATASET_SERVICE:-false}
@@ -90,6 +94,7 @@ services:
       OPENROUTER_MODEL: ${OPENROUTER_MODEL:-nvidia/nemotron-3.5-lightning:free}
       CURSOR_API_KEY: ${CURSOR_API_KEY:-}
     volumes:
+      - ..:/repo
       # rw so uploaded CSVs can be reused via the prior-datasets dropdown
       - ../datasets:/bundled
       - ../lab:/packages/lab

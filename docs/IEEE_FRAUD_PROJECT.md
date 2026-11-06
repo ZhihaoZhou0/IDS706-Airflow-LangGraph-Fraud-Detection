@@ -45,6 +45,14 @@ The Airflow DAG is implemented in:
 9. `analyze_fraud` — Train and evaluate a baseline fraud detection model.
 10. `publish_metrics` — Publish pipeline metrics.
 
+### Scheduling and Parallel Execution
+
+The Airflow DAG uses a daily schedule (`@daily`) with `catchup=False` to prevent automatic backfilling of historical runs.
+
+Transaction and identity data are ingested and cleaned through two independent branches. Airflow can schedule these branches in parallel when worker capacity permits.
+
+After both branches complete, the pipeline merges the datasets using `TransactionID`, performs feature engineering, and loads the processed records into PostgreSQL. Downstream analysis reads the stored data from PostgreSQL before training and evaluating the baseline model.
+
 ### Pipeline Results
 
 | Metric | Value |
@@ -125,6 +133,166 @@ The workflow records model selections, evaluation outcomes, feedback decisions, 
 | `artifacts/ieee_fraud/latest_metrics.json` | Airflow metrics |
 | `artifacts/ieee_fraud/agent_results.json` | LangGraph experiment results |
 | `artifacts/ieee_fraud/ieee_agent_graph.mmd` | Workflow graph |
+
+## How to Run
+
+Run the following commands from the repository root. The commands below use Git Bash on Windows.
+
+### 1. Prepare the Environment
+
+Requirements:
+- Docker Desktop
+- Git
+- Python with pandas and NumPy
+- Access to the IEEE-CIS Fraud Detection dataset
+
+Clone the repository and create the local environment file:
+
+```bash
+git clone https://github.com/ZhihaoZhou0/IDS706-Airflow-LangGraph-Fraud-Detection.git
+cd IDS706-Airflow-LangGraph-Fraud-Detection
+cp .env.example .env
+```
+
+### 2. Download and Prepare the Dataset
+
+Download the [IEEE-CIS Fraud Detection dataset](https://www.kaggle.com/competitions/ieee-fraud-detection/data) from Kaggle.
+
+Place these files in `datasets/ieee_fraud/`:
+
+- `train_transaction.csv`
+- `train_identity.csv`
+
+Generate a stratified sample:
+
+```bash
+python sample_ieee_data.py --sample-size 50000 --seed 42 --chunksize 10000
+```
+
+This command creates:
+
+- `datasets/ieee_fraud/sampled/transactions_sample.csv`
+- `datasets/ieee_fraud/sampled/identity_sample.csv`
+
+**Warning:** The sampling command overwrites existing sample files. Back up any samples you want to preserve before running it.
+
+### 3. Start PostgreSQL and Airflow
+
+Start the analytics database:
+
+```bash
+docker compose -f infra/docker-compose.yml --env-file .env up -d analytics-db
+```
+
+Start Airflow:
+
+```bash
+docker compose -f infra/docker-compose.yml --env-file .env --profile airflow up -d --build airflow-init airflow-webserver airflow-scheduler
+```
+
+Open the Airflow UI:
+
+`http://localhost:8088`
+
+The default development credentials are `admin` / `admin`, unless changed in `.env`.
+
+Locate the DAG named `ieee_fraud_pipeline`, unpause it, and trigger a run manually.
+
+The DAG is also configured with a daily schedule (`@daily`) and `catchup=False`.
+
+### 4. Inspect Airflow Results
+
+After the DAG completes, check the following output:
+
+- `artifacts/ieee_fraud/latest_metrics.json`
+
+The pipeline ingests, cleans, merges, and stores transaction and identity data in PostgreSQL before performing baseline fraud detection analysis.
+
+### 5. Run the Adaptive LangGraph Workflow
+
+After the Airflow DAG has successfully populated PostgreSQL, build the Gateway image:
+
+```bash
+docker compose -f infra/docker-compose.yml --env-file .env build gateway
+```
+
+Run the LangGraph workflow:
+
+```bash
+MSYS_NO_PATHCONV=1 docker compose \
+  -f infra/docker-compose.yml \
+  --env-file .env \
+  run --rm --no-deps \
+  -v "$(pwd):/repo" \
+  -v "$(pwd)/loop_runtime.py:/app/loop_runtime.py:ro" \
+  -e PYTHONPATH=/repo:/app \
+  --entrypoint sh \
+  gateway -c 'python /repo/test_ieee_agent.py'
+```
+
+The workflow reads processed records from PostgreSQL and runs adaptive model experiments.
+
+### 6. Inspect LangGraph Results
+
+The workflow generates:
+
+- `artifacts/ieee_fraud/agent_results.json` — Experiment results and evaluation metrics.
+- `artifacts/ieee_fraud/ieee_agent_graph.mmd` — Mermaid representation of the workflow graph.
+
+The recorded experiments evaluate Logistic Regression, Random Forest, and Histogram Gradient Boosting.
+
+### 7. Live Fraud Detection Dashboard
+
+The project also provides an interactive React dashboard that visualizes the adaptive LangGraph workflow in real time.
+
+The dashboard includes:
+
+- **Live Workflow Visualization:** Seven LangGraph nodes with real-time execution status and animated connections.
+- **Model Performance:** Validation metrics for Logistic Regression, Random Forest, and Histogram Gradient Boosting.
+- **Holdout Evaluation:** Final model evaluation on a separate holdout dataset.
+- **Agent Decision Trace:** A chronological record of model selections, evaluation results, and feedback-driven decisions.
+
+To launch the dashboard, first ensure that the PostgreSQL database has been populated by the Airflow pipeline.
+
+Start the Gateway:
+
+```bash
+docker compose -f infra/docker-compose.yml --env-file .env up -d --build gateway
+```
+
+Start the React frontend from the repository root:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open:
+
+`http://localhost:5173/ieee-fraud`
+
+Click **Run Fraud Detection** to execute the adaptive workflow and view its progress.
+
+**Recorded results:**
+- Validation F1: Logistic Regression 0.0835, Random Forest 0.2624, Histogram Gradient Boosting 0.3455.
+- Final holdout F1: 0.4404.
+- Final holdout accuracy: 97.46%.
+
+![Live Fraud Detection Dashboard](../images/ieee_fraud_live_dashboard.png)
+
+### 8. Screenshots
+
+Evidence of successful execution is available in the `images/` directory:
+
+- [Airflow DAG Execution](../images/ieee_airflow_dag_success.png)
+- [Airflow Run Details](../images/ieee_airflow_run_details.png)
+- [Airflow Model Metrics](../images/ieee_airflow_model_metrics.png)
+- [LangGraph Workflow Graph](../images/ieee_agent_graph.png)
+- [LangGraph Model Metrics](../images/ieee_agent_model_metrics.png)
+- [LangGraph Decision Trace](../images/ieee_agent_decision_trace.png)
+
+These screenshots document the completed workflows, model performance, and adaptive experiment decisions.
 
 ## Reproducibility Notes
 

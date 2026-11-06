@@ -2,11 +2,32 @@
 
 ## IEEE-CIS Fraud Detection Extension
 
-This repository also includes a custom fraud detection pipeline using
-Apache Airflow and an adaptive LangGraph workflow.
+This repository includes an end-to-end fraud detection project using **Apache Airflow, PostgreSQL, and LangGraph**, based on the IEEE-CIS Fraud Detection dataset.
 
-See [IEEE-CIS Fraud Detection Project](docs/IEEE_FRAUD_PROJECT.md)
-for the implementation details and experimental results.
+### Part 1 — Airflow Data Pipeline
+
+- Ingest and clean two related datasets: transaction records and identity information.
+- Process the two data sources through independent branches that can run in parallel.
+- Merge the datasets using `TransactionID`, engineer features, and store the processed data in PostgreSQL.
+- Read the processed data from PostgreSQL and train a Logistic Regression baseline.
+- Schedule the DAG to run daily (`@daily`, with `catchup=False`).
+
+**Key Results:** 50,000 processed transactions, 3.50% fraud rate, 0.7594 accuracy, and 0.1370 F1 score.
+
+### Part 2 — Adaptive LangGraph Workflow
+
+- Use cleaned fraud data exported from PostgreSQL.
+- Coordinate data profiling, experiment planning, model training, performance evaluation, feedback analysis, and result publication.
+- Adapt model selection through feedback-driven iterations.
+- Evaluate the selected model on a separate holdout set.
+
+**Key Results:** Three model experiments were completed. Histogram Gradient Boosting achieved the highest validation F1 score (0.3455), with a final holdout F1 score of 0.4404.
+
+**Note:** The Airflow and LangGraph experiments use different sample sizes and evaluation procedures, so their F1 scores are not directly comparable.
+
+### Documentation
+
+See [IEEE-CIS Fraud Detection Project](docs/IEEE_FRAUD_PROJECT.md) for the dataset, pipeline architecture, implementation details, execution instructions, screenshots, and experimental results.
 
 ---
 

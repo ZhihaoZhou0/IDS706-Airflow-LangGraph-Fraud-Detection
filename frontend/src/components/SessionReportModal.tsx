@@ -37,7 +37,7 @@ export function SessionReportModal({
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `session-report-${report.sessionId}.md`
+    a.download = `session-report-${report?.sessionId ?? 'unknown'}.md`
     a.click()
     URL.revokeObjectURL(url)
   }

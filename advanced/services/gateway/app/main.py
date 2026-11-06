@@ -60,6 +60,10 @@ SERVICE_TOKEN = os.getenv("SERVICE_TOKEN", "dev-service-token")
 app = FastAPI(title="AutoML Gateway", version="0.3.0")
 app.add_middleware(CorrelationIdMiddleware)
 
+from services.gateway.app.ieee_fraud_api import router as ieee_fraud_router
+
+app.include_router(ieee_fraud_router)
+
 # session_id -> mode
 _session_modes: dict[str, str] = {}
 
