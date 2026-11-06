@@ -25,6 +25,9 @@ This repository includes an end-to-end fraud detection project using **Apache Ai
 
 **Note:** The Airflow and LangGraph experiments use different sample sizes and evaluation procedures, so their F1 scores are not directly comparable.
 
+
+**Live Dashboard:** Start the Gateway and React frontend, then open `http://localhost:5173/ieee-fraud` to run and visualize the adaptive LangGraph workflow. See [project documentation](docs/IEEE_FRAUD_PROJECT.md) for setup instructions and screenshots.
+
 ### Documentation
 
 See [IEEE-CIS Fraud Detection Project](docs/IEEE_FRAUD_PROJECT.md) for the dataset, pipeline architecture, implementation details, execution instructions, screenshots, and experimental results.
