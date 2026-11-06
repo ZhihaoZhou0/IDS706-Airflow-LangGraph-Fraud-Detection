@@ -1,0 +1,91 @@
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+.venv/
+venv/
+.envrc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Node / frontend
+node_modules/
+frontend/dist/
+frontend/.vite/
+
+# MLflow
+mlruns/
+mlflow.db
+*.pkl
+*.joblib
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Docker
+.docker/
+
+# Simple-loop runtime memory
+mini_loop/memory/
+mini_loop/**/__pycache__/
+
+# Airflow runtime files
+datasets/airflow/merged_latest.csv
+datasets/airflow/latest_handoff.json
+airflow.db
+airflow-webserver.pid
+
+# IEEE-CIS raw datasets
+/datasets/ieee_fraud/*.csv
+/datasets/ieee_fraud/*.zip
+/datasets/ieee_fraud/*.parquet
+
+# Sampled datasets
+# Keep these excluded until redistribution permission is confirmed
+/datasets/ieee_fraud/sampled/*.csv
+
+# Generated artifacts
+/artifacts/*
+
+# Preserve selected reproducible experiment reports
+!/artifacts/ieee_fraud/
+/artifacts/ieee_fraud/*
+
+!/artifacts/ieee_fraud/agent_results.json
+!/artifacts/ieee_fraud/ieee_agent_graph.mmd
+!/artifacts/ieee_fraud/latest_metrics.json
+
+# Accidental empty files
+/holdout_frac:
+/seed:
+/steps:
+
+# Temporary Git inspection
+/git_preview.txt
+
+# Backup scripts
+/lab/langgraph/graph_backup.py
+/lab/langgraph/ieee_fraud_graph_backup.py
+
+# Accidental files with unusual characters
+/holdout_frac*
+/seed*
+/steps*

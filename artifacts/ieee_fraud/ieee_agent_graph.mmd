@@ -1,0 +1,27 @@
+---
+config:
+  flowchart:
+    curve: linear
+---
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	fraud_data_profiler(fraud_data_profiler)
+	experiment_planner(experiment_planner)
+	model_trainer(model_trainer)
+	performance_evaluator(performance_evaluator)
+	feedback_analyzer(feedback_analyzer)
+	holdout_evaluation(holdout_evaluation)
+	publish_results(publish_results)
+	__end__([<p>__end__</p>]):::last
+	__start__ --> fraud_data_profiler;
+	experiment_planner --> model_trainer;
+	feedback_analyzer --> experiment_planner;
+	fraud_data_profiler --> experiment_planner;
+	holdout_evaluation --> publish_results;
+	model_trainer --> performance_evaluator;
+	performance_evaluator -. &nbsp;feedback&nbsp; .-> feedback_analyzer;
+	performance_evaluator -. &nbsp;holdout&nbsp; .-> holdout_evaluation;
+	publish_results --> __end__;
+	classDef default fill:#f2f0ff,line-height:1.2
+	classDef first fill-opacity:0
+	classDef last fill:#bfb6fc

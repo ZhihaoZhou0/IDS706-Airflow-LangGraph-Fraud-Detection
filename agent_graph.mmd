@@ -1,0 +1,28 @@
+---
+config:
+  flowchart:
+    curve: linear
+---
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	data_scientist(data_scientist)
+	hypothesis_generator(hypothesis_generator)
+	ml_engineer(ml_engineer)
+	judge(judge)
+	memory_writer(memory_writer)
+	context_builder(context_builder)
+	holdout_eval(holdout_eval)
+	__end__([<p>__end__</p>]):::last
+	__start__ --> data_scientist;
+	context_builder --> hypothesis_generator;
+	data_scientist --> hypothesis_generator;
+	hypothesis_generator --> ml_engineer;
+	judge -. &nbsp;holdout&nbsp; .-> holdout_eval;
+	judge -. &nbsp;memory&nbsp; .-> memory_writer;
+	memory_writer --> context_builder;
+	ml_engineer --> judge;
+	holdout_eval --> __end__;
+	classDef default fill:#f2f0ff,line-height:1.2
+	classDef first fill-opacity:0
+	classDef last fill:#bfb6fc
+
