@@ -281,7 +281,7 @@ Then open [http://127.0.0.1:5173/solution-loop](http://127.0.0.1:5173/solution-l
 - After Section 1: dataset `merged_latest.csv`, target `is_fraud`
 - Without Airflow: e.g. `Titanic-Dataset.csv`, target `Survived`
 
-![Simple research loop UI with merged_latest.csv and live agent graph](docs/images/solution-loop.jpg)
+![Simple research loop UI with merged_latest.csv and live agent graph](docs/images/simple-loop.jpg)
 
 **Optional checks**
 
