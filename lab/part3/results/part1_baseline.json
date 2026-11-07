@@ -1,0 +1,23 @@
+{
+  "system": "part1_fixed_airflow_task_reproduction",
+  "model_family": "logistic_regression",
+  "dataset": "artifacts/ieee_fraud/agent_input.csv",
+  "rows": 12000,
+  "features": [
+    "TransactionAmt",
+    "has_identity",
+    "ProductCD",
+    "card4",
+    "card6",
+    "DeviceType"
+  ],
+  "seed": 42,
+  "holdout_frac": 0.2,
+  "holdout_metrics": {
+    "f1": 0.17914831130690162,
+    "accuracy": 0.7670833333333333,
+    "precision": 0.10217755443886097,
+    "recall": 0.7261904761904762,
+    "n_holdout": 2400
+  }
+}

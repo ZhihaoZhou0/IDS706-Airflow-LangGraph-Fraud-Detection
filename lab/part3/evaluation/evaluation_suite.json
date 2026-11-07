@@ -1,0 +1,295 @@
+[
+  {
+    "test_id": "lab.part3.evaluation.test_planner::test_agent_routing[state0-data_quality_agent]",
+    "category": "Agent Routing",
+    "input": {},
+    "expected_behavior": "Route to data_quality_agent",
+    "scoring_criteria": "All test assertions must pass",
+    "pass_threshold": "100% of assertions",
+    "actual_result": "PASS",
+    "passed": true,
+    "duration_seconds": 0.004
+  },
+  {
+    "test_id": "lab.part3.evaluation.test_planner::test_agent_routing[state1-planning_agent]",
+    "category": "Agent Routing",
+    "input": {
+      "data_checked": true
+    },
+    "expected_behavior": "Route to planning_agent",
+    "scoring_criteria": "All test assertions must pass",
+    "pass_threshold": "100% of assertions",
+    "actual_result": "PASS",
+    "passed": true,
+    "duration_seconds": 0.001
+  },
+  {
+    "test_id": "lab.part3.evaluation.test_planner::test_agent_routing[state2-training_agent]",
+    "category": "Agent Routing",
+    "input": {
+      "data_checked": true,
+      "plan": {
+        "model_family": "logistic_regression"
+      }
+    },
+    "expected_behavior": "Route to training_agent",
+    "scoring_criteria": "All test assertions must pass",
+    "pass_threshold": "100% of assertions",
+    "actual_result": "PASS",
+    "passed": true,
+    "duration_seconds": 0.001
+  },
+  {
+    "test_id": "lab.part3.evaluation.test_planner::test_agent_routing[state3-recovery_agent]",
+    "category": "Agent Routing",
+    "input": {
+      "data_checked": true,
+      "training_error": "training failed",
+      "retry_count": 0,
+      "max_retries": 2
+    },
+    "expected_behavior": "Route to recovery_agent",
+    "scoring_criteria": "All test assertions must pass",
+    "pass_threshold": "100% of assertions",
+    "actual_result": "PASS",
+    "passed": true,
+    "duration_seconds": 0.0
+  },
+  {
+    "test_id": "lab.part3.evaluation.test_planner::test_agent_routing[state4-finalize_agent]",
+    "category": "Agent Routing",
+    "input": {
+      "data_checked": true,
+      "training_error": "training failed",
+      "retry_count": 2,
+      "max_retries": 2
+    },
+    "expected_behavior": "Route to finalize_agent",
+    "scoring_criteria": "All test assertions must pass",
+    "pass_threshold": "100% of assertions",
+    "actual_result": "PASS",
+    "passed": true,
+    "duration_seconds": 0.0
+  },
+  {
+    "test_id": "lab.part3.evaluation.test_planner::test_agent_routing[state5-planning_agent]",
+    "category": "Agent Routing",
+    "input": {
+      "data_checked": true,
+      "current_result": {
+        "status": "succeeded"
+      },
+      "best_val_f1": 0.15,
+      "target_f1": 0.3,
+      "cycle": 1,
+      "max_cycles": 3
+    },
+    "expected_behavior": "Route to planning_agent",
+    "scoring_criteria": "All test assertions must pass",
+    "pass_threshold": "100% of assertions",
+    "actual_result": "PASS",
+    "passed": true,
+    "duration_seconds": 0.001
+  },
+  {
+    "test_id": "lab.part3.evaluation.test_planner::test_agent_routing[state6-finalize_agent]",
+    "category": "Agent Routing",
+    "input": {
+      "data_checked": true,
+      "current_result": {
+        "status": "succeeded"
+      },
+      "best_val_f1": 0.35,
+      "target_f1": 0.3,
+      "cycle": 2,
+      "max_cycles": 3
+    },
+    "expected_behavior": "Route to finalize_agent",
+    "scoring_criteria": "All test assertions must pass",
+    "pass_threshold": "100% of assertions",
+    "actual_result": "PASS",
+    "passed": true,
+    "duration_seconds": 0.0
+  },
+  {
+    "test_id": "lab.part3.evaluation.test_planner::test_model_selection_starts_with_logistic_regression",
+    "category": "Model Selection",
+    "input": {
+      "history": []
+    },
+    "expected_behavior": "Select logistic_regression",
+    "scoring_criteria": "All test assertions must pass",
+    "pass_threshold": "100% of assertions",
+    "actual_result": "PASS",
+    "passed": true,
+    "duration_seconds": 0.0
+  },
+  {
+    "test_id": "lab.part3.evaluation.test_planner::test_model_selection_switches_to_random_forest",
+    "category": "Model Selection",
+    "input": {
+      "history": [
+        {
+          "model_family": "logistic_regression"
+        }
+      ]
+    },
+    "expected_behavior": "Select random_forest",
+    "scoring_criteria": "All test assertions must pass",
+    "pass_threshold": "100% of assertions",
+    "actual_result": "PASS",
+    "passed": true,
+    "duration_seconds": 0.0
+  },
+  {
+    "test_id": "lab.part3.evaluation.test_planner::test_model_selection_switches_to_boosting",
+    "category": "Model Selection",
+    "input": {
+      "history": [
+        {
+          "model_family": "logistic_regression"
+        },
+        {
+          "model_family": "random_forest"
+        }
+      ]
+    },
+    "expected_behavior": "Select hist_gradient_boosting",
+    "scoring_criteria": "All test assertions must pass",
+    "pass_threshold": "100% of assertions",
+    "actual_result": "PASS",
+    "passed": true,
+    "duration_seconds": 0.0
+  },
+  {
+    "test_id": "lab.part3.evaluation.test_planner::test_model_selection_refines_best_model",
+    "category": "Model Selection",
+    "input": {
+      "history": [
+        {
+          "model_family": "logistic_regression"
+        },
+        {
+          "model_family": "random_forest"
+        },
+        {
+          "model_family": "hist_gradient_boosting"
+        }
+      ],
+      "best_spec": {
+        "model_family": "random_forest"
+      }
+    },
+    "expected_behavior": "Select random_forest with reason refine_best_model",
+    "scoring_criteria": "All test assertions must pass",
+    "pass_threshold": "100% of assertions",
+    "actual_result": "PASS",
+    "passed": true,
+    "duration_seconds": 0.001
+  },
+  {
+    "test_id": "lab.part3.evaluation.test_multi_agent_graph::test_normal_workflow_reaches_target",
+    "category": "Workflow Integration",
+    "input": {
+      "max_cycles": 3,
+      "target_f1": 0.3,
+      "max_retries": 2
+    },
+    "expected_behavior": "Stop at target_reached, complete 3 cycles, simulated F1=0.35, planning/evaluation agents executed",
+    "scoring_criteria": "All test assertions must pass",
+    "pass_threshold": "100% of assertions",
+    "actual_result": "PASS",
+    "passed": true,
+    "duration_seconds": 0.01
+  },
+  {
+    "test_id": "lab.part3.evaluation.test_multi_agent_graph::test_recovery_after_invalid_model",
+    "category": "Workflow Integration",
+    "input": {
+      "data_checked": true,
+      "plan": {
+        "model_family": "invalid_model"
+      },
+      "max_cycles": 2,
+      "target_f1": 0.3,
+      "max_retries": 2
+    },
+    "expected_behavior": "One recovery, 2 completed cycles, recovery agent executes before evaluation",
+    "scoring_criteria": "All test assertions must pass",
+    "pass_threshold": "100% of assertions",
+    "actual_result": "PASS",
+    "passed": true,
+    "duration_seconds": 0.007
+  },
+  {
+    "test_id": "lab.part3.evaluation.test_multi_agent_graph::test_zero_retries_stops_immediately",
+    "category": "Workflow Integration",
+    "input": {
+      "data_checked": true,
+      "plan": {
+        "model_family": "invalid_model"
+      },
+      "max_cycles": 3,
+      "target_f1": 0.3,
+      "max_retries": 0
+    },
+    "expected_behavior": "Stop at retry_limit without recovery or completed training cycles",
+    "scoring_criteria": "All test assertions must pass",
+    "pass_threshold": "100% of assertions",
+    "actual_result": "PASS",
+    "passed": true,
+    "duration_seconds": 0.004
+  },
+  {
+    "test_id": "lab.part3.evaluation.test_data_quality::test_missing_dataset_stops_before_training",
+    "category": "Data Quality & Safety",
+    "input": {
+      "mode": "real",
+      "data_path": "nonexistent_test_file.csv",
+      "max_cycles": 3,
+      "max_retries": 2
+    },
+    "expected_behavior": "Stop at data_quality_failed; training and recovery agents not executed",
+    "scoring_criteria": "All test assertions must pass",
+    "pass_threshold": "100% of assertions",
+    "actual_result": "PASS",
+    "passed": true,
+    "duration_seconds": 0.369
+  },
+  {
+    "test_id": "lab.part3.evaluation.test_data_quality::test_simulation_still_reaches_target",
+    "category": "Data Quality & Safety",
+    "input": {
+      "mode": "simulation",
+      "max_cycles": 3,
+      "target_f1": 0.3,
+      "max_retries": 2
+    },
+    "expected_behavior": "Select hist_gradient_boosting, reach simulated F1=0.35, no holdout metrics",
+    "scoring_criteria": "All test assertions must pass",
+    "pass_threshold": "100% of assertions",
+    "actual_result": "PASS",
+    "passed": true,
+    "duration_seconds": 0.008
+  },
+  {
+    "test_id": "lab.part3.evaluation.test_data_quality::test_recovery_respects_retry_limit",
+    "category": "Data Quality & Safety",
+    "input": {
+      "mode": "simulation",
+      "data_checked": true,
+      "plan": {
+        "model_family": "invalid_model"
+      },
+      "max_retries": 1,
+      "max_cycles": 3,
+      "target_f1": 0.3
+    },
+    "expected_behavior": "Exactly one recovery; target_reached with hist_gradient_boosting",
+    "scoring_criteria": "All test assertions must pass",
+    "pass_threshold": "100% of assertions",
+    "actual_result": "PASS",
+    "passed": true,
+    "duration_seconds": 0.008
+  }
+]
