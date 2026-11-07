@@ -1,0 +1,122 @@
+{
+  "dataset": "IEEE-CIS Fraud Detection",
+  "source": "PostgreSQL",
+  "profile": {
+    "target": "isFraud",
+    "rows": 12000,
+    "fraud_rate": 0.035,
+    "features": [
+      "TransactionAmt",
+      "TransactionDT",
+      "ProductCD",
+      "card1",
+      "card4",
+      "card6",
+      "addr1",
+      "dist1",
+      "P_emaildomain",
+      "R_emaildomain",
+      "C1",
+      "C2",
+      "D1",
+      "D2",
+      "DeviceType",
+      "has_identity"
+    ]
+  },
+  "history": [
+    {
+      "experiment_id": "fraud-exp-1",
+      "model_family": "logistic_regression",
+      "f1": 0.08345323741007195,
+      "accuracy": 0.4691666666666667
+    },
+    {
+      "experiment_id": "fraud-exp-2",
+      "model_family": "random_forest",
+      "f1": 0.26239067055393583,
+      "accuracy": 0.8945833333333333
+    },
+    {
+      "experiment_id": "fraud-exp-3",
+      "model_family": "hist_gradient_boosting",
+      "f1": 0.34545454545454546,
+      "accuracy": 0.97
+    }
+  ],
+  "best_spec": {
+    "experiment_id": "fraud-exp-3",
+    "model_family": "hist_gradient_boosting",
+    "hyperparameters": {
+      "learning_rate": 0.08,
+      "max_iter": 80
+    },
+    "drop_columns": [],
+    "reason": "tree_model_below_target_try_boosting"
+  },
+  "best_validation_f1": 0.34545454545454546,
+  "holdout_metrics": {
+    "f1": 0.44036697247706424,
+    "accuracy": 0.9745833333333334,
+    "n_holdout": 2400
+  },
+  "cycles": 3,
+  "stop_reason": "target_reached",
+  "decision_trace": [
+    {
+      "node": "experiment_planner",
+      "experiment_id": "fraud-exp-1",
+      "model": "logistic_regression",
+      "reason": "start_with_interpretable_baseline"
+    },
+    {
+      "node": "performance_evaluator",
+      "improved": true,
+      "continue": true,
+      "cycle": 1,
+      "f1": 0.08345323741007195
+    },
+    {
+      "node": "feedback_analyzer",
+      "previous_model": "logistic_regression",
+      "previous_f1": 0.08345323741007195,
+      "f1_delta": null,
+      "target_gap": 0.21654676258992805,
+      "action": "switch_to_tree"
+    },
+    {
+      "node": "experiment_planner",
+      "experiment_id": "fraud-exp-2",
+      "model": "random_forest",
+      "reason": "weak_linear_baseline_try_nonlinear_model"
+    },
+    {
+      "node": "performance_evaluator",
+      "improved": true,
+      "continue": true,
+      "cycle": 2,
+      "f1": 0.26239067055393583
+    },
+    {
+      "node": "feedback_analyzer",
+      "previous_model": "random_forest",
+      "previous_f1": 0.26239067055393583,
+      "f1_delta": 0.1789374331438639,
+      "target_gap": 0.037609329446064155,
+      "action": "try_boosting"
+    },
+    {
+      "node": "experiment_planner",
+      "experiment_id": "fraud-exp-3",
+      "model": "hist_gradient_boosting",
+      "reason": "tree_model_below_target_try_boosting"
+    },
+    {
+      "node": "performance_evaluator",
+      "improved": true,
+      "continue": false,
+      "cycle": 3,
+      "f1": 0.34545454545454546
+    }
+  ]
+}

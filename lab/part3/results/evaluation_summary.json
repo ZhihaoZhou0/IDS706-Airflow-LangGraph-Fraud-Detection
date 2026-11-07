@@ -1,0 +1,29 @@
+{
+  "total_tests": 17,
+  "passed": 17,
+  "failed_or_skipped": 0,
+  "pass_rate": 1.0,
+  "categories": {
+    "Agent Routing": {
+      "total": 7,
+      "passed": 7,
+      "pass_rate": 1.0
+    },
+    "Model Selection": {
+      "total": 4,
+      "passed": 4,
+      "pass_rate": 1.0
+    },
+    "Workflow Integration": {
+      "total": 3,
+      "passed": 3,
+      "pass_rate": 1.0
+    },
+    "Data Quality & Safety": {
+      "total": 3,
+      "passed": 3,
+      "pass_rate": 1.0
+    }
+  },
+  "source": "lab\\part3\\results\\pytest_results.xml"
+}

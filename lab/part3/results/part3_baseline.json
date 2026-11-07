@@ -1,0 +1,157 @@
+{
+  "data_checked": true,
+  "data_quality_report": {
+    "passed": true,
+    "rows": 12000,
+    "columns": 17,
+    "target": "isFraud",
+    "class_distribution": {
+      "0": 11580,
+      "1": 420
+    },
+    "missing_values": 34498,
+    "duplicate_rows": 0
+  },
+  "mode": "real",
+  "data_path": "artifacts/ieee_fraud/agent_input.csv",
+  "seed": 42,
+  "holdout_frac": 0.2,
+  "training_error": "",
+  "max_retries": 2,
+  "current_result": {
+    "status": "succeeded",
+    "experiment_id": null,
+    "model_family": "hist_gradient_boosting",
+    "hyperparameters": {},
+    "drop_columns": [],
+    "validation_metrics": {
+      "f1": 0.3793103448275862,
+      "accuracy": 0.97
+    },
+    "duration_sec": 0.314,
+    "duration_seconds": 0.314,
+    "n_train": 7200,
+    "n_val": 2400,
+    "n_holdout": 2400
+  },
+  "best_val_f1": 0.3793103448275862,
+  "target_f1": 0.3,
+  "cycle": 3,
+  "max_cycles": 3,
+  "history": [
+    {
+      "model_family": "logistic_regression",
+      "f1": 0.08706786171574904
+    },
+    {
+      "model_family": "random_forest",
+      "f1": 0.20316027088036118
+    },
+    {
+      "model_family": "hist_gradient_boosting",
+      "f1": 0.3793103448275862
+    }
+  ],
+  "best_spec": {
+    "model_family": "hist_gradient_boosting"
+  },
+  "plan": {
+    "model_family": "hist_gradient_boosting",
+    "reason": "explore_untried_model"
+  },
+  "execution_trace": [
+    {
+      "agent": "supervisor_agent",
+      "decision": "data_quality_agent"
+    },
+    {
+      "agent": "data_quality_agent",
+      "status": "passed"
+    },
+    {
+      "agent": "supervisor_agent",
+      "decision": "planning_agent"
+    },
+    {
+      "agent": "planning_agent",
+      "model_family": "logistic_regression",
+      "reason": "explore_untried_model"
+    },
+    {
+      "agent": "supervisor_agent",
+      "decision": "training_agent"
+    },
+    {
+      "agent": "training_agent",
+      "status": "succeeded",
+      "f1": 0.08706786171574904
+    },
+    {
+      "agent": "evaluation_agent",
+      "f1": 0.08706786171574904,
+      "improved": true
+    },
+    {
+      "agent": "supervisor_agent",
+      "decision": "planning_agent"
+    },
+    {
+      "agent": "planning_agent",
+      "model_family": "random_forest",
+      "reason": "explore_untried_model"
+    },
+    {
+      "agent": "supervisor_agent",
+      "decision": "training_agent"
+    },
+    {
+      "agent": "training_agent",
+      "status": "succeeded",
+      "f1": 0.20316027088036118
+    },
+    {
+      "agent": "evaluation_agent",
+      "f1": 0.20316027088036118,
+      "improved": true
+    },
+    {
+      "agent": "supervisor_agent",
+      "decision": "planning_agent"
+    },
+    {
+      "agent": "planning_agent",
+      "model_family": "hist_gradient_boosting",
+      "reason": "explore_untried_model"
+    },
+    {
+      "agent": "supervisor_agent",
+      "decision": "training_agent"
+    },
+    {
+      "agent": "training_agent",
+      "status": "succeeded",
+      "f1": 0.3793103448275862
+    },
+    {
+      "agent": "evaluation_agent",
+      "f1": 0.3793103448275862,
+      "improved": true
+    },
+    {
+      "agent": "supervisor_agent",
+      "decision": "finalize_agent"
+    },
+    {
+      "agent": "finalize_agent",
+      "reason": "target_reached",
+      "holdout_completed": true
+    }
+  ],
+  "stop_reason": "target_reached",
+  "holdout_metrics": {
+    "f1": 0.45614035087719296,
+    "accuracy": 0.9741666666666666,
+    "n_holdout": 2400
+  },
+  "holdout_error": null
+}

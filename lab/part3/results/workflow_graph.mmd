@@ -1,0 +1,31 @@
+---
+config:
+  flowchart:
+    curve: linear
+---
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	supervisor_agent(supervisor_agent)
+	data_quality_agent(data_quality_agent)
+	planning_agent(planning_agent)
+	training_agent(training_agent)
+	evaluation_agent(evaluation_agent)
+	recovery_agent(recovery_agent)
+	finalize_agent(finalize_agent)
+	__end__([<p>__end__</p>]):::last
+	__start__ --> supervisor_agent;
+	data_quality_agent --> supervisor_agent;
+	evaluation_agent --> supervisor_agent;
+	planning_agent --> supervisor_agent;
+	recovery_agent --> supervisor_agent;
+	supervisor_agent -.-> data_quality_agent;
+	supervisor_agent -.-> finalize_agent;
+	supervisor_agent -.-> planning_agent;
+	supervisor_agent -.-> recovery_agent;
+	supervisor_agent -.-> training_agent;
+	training_agent -.-> evaluation_agent;
+	training_agent -.-> supervisor_agent;
+	finalize_agent --> __end__;
+	classDef default fill:#f2f0ff,line-height:1.2
+	classDef first fill-opacity:0
+	classDef last fill:#bfb6fc

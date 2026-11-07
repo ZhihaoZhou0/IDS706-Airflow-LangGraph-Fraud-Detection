@@ -94,3 +94,9 @@ airflow-webserver.pid
 /backups/
 # Local backup files
 *.bak
+
+# Part 3 Dashboard virtual environment
+.venv-dashboard/
+
+# Part 3 temporary backup files
+lab/part3/*.bak
