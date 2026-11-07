@@ -1,3 +1,35 @@
+## IDS 706 Project Components
+
+This repository contains three parts of the IDS 706 Data Engineering Systems project, progressing from a fixed Airflow pipeline to an adaptive multi-agent fraud detection system.
+
+| Component | Description | Location |
+|---|---|---|
+| Part 1 — Apache Airflow | Fixed fraud detection data engineering and machine learning pipeline | [`lab/airflow/`](lab/airflow/) |
+| Part 2 — LangGraph | Adaptive model selection and iterative evaluation | [`lab/langgraph/`](lab/langgraph/) |
+| **Part 3 — Multi-Agent System (Optional Super Bonus)** | **Supervisor-controlled multi-agent workflow, failure recovery, evaluation suite, and dashboard** | **[Part 3 Documentation](lab/part3/README.md)** |
+
+### Part 3 — Adaptive Multi-Agent Fraud Detection
+
+**The optional Part 3 submission is available here:**
+
+**[View Part 3: Full Documentation, Setup Instructions, and Results](lab/part3/README.md)**
+
+Part 3 includes:
+
+- Seven specialized LangGraph agents with dynamic routing
+- Adaptive model selection and failure recovery
+- Automated evaluation suite: **17/17 tests passed**
+- Comparison with Part 1 and Part 2 baselines
+- Interactive Streamlit dashboard
+- Workflow architecture and performance visualizations
+
+**Key results:** Part 3 achieved a holdout F1 score of **0.4561**, compared with **0.4404** for Part 2 and **0.1791** for the controlled Part 1 baseline. These systems use different model configurations, so the performance differences cannot be attributed solely to the multi-agent architecture.
+
+For the complete implementation and reproducibility instructions, see the **[Part 3 README](lab/part3/README.md)**.
+
+---
+
+
 # AutoML Research Lab: Student Setup
 
 ## IEEE-CIS Fraud Detection Extension
