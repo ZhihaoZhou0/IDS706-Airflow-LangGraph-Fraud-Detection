@@ -1,36 +1,32 @@
-## IDS 706 Project Components
+# IDS 706 — IEEE-CIS Fraud Detection Project
 
-This repository contains three parts of the IDS 706 Data Engineering Systems project, progressing from a fixed Airflow pipeline to an adaptive multi-agent fraud detection system.
+**Submission guide:** This repository contains the required Airflow pipeline (Part 1), adaptive LangGraph machine-learning workflow (Part 2), and optional adaptive multi-agent system with evaluation (Part 3).
 
-| Component | Description | Location |
+| Assignment component | Code and instructions | Evidence / results |
 |---|---|---|
-| Part 1 — Apache Airflow | Fixed fraud detection data engineering and machine learning pipeline | [`lab/airflow/`](lab/airflow/) |
-| Part 2 — LangGraph | Adaptive model selection and iterative evaluation | [`lab/langgraph/`](lab/langgraph/) |
-| **Part 3 — Multi-Agent System (Optional Super Bonus)** | **Supervisor-controlled multi-agent workflow, failure recovery, evaluation suite, and dashboard** | **[Part 3 Documentation](lab/part3/README.md)** |
+| **Part 1 — Airflow** | [Airflow DAG](lab/airflow/dags/ieee_fraud_pipeline.py) · [Project setup and execution guide](docs/IEEE_FRAUD_PROJECT.md) | [Successful DAG run](images/ieee_airflow_dag_success.png) · [DAG run details](images/ieee_airflow_run_details.png) · [Model results](images/ieee_airflow_model_metrics.png) |
+| **Part 2 — Agentic ML loop** | [LangGraph workflow](lab/langgraph/ieee_fraud_graph.py) · [Run instructions](docs/IEEE_FRAUD_PROJECT.md) | [Agent graph](images/ieee_agent_graph.png) · [Decision trace](images/ieee_agent_decision_trace.png) · [Model evaluation](images/ieee_agent_model_metrics.png) |
+| **Part 3 — Optional multi-agent bonus** | **[Start here: Part 3 README](lab/part3/README.md)** · [Multi-agent graph](lab/part3/multi_agent_graph.py) · [Streamlit dashboard](lab/part3/dashboard.py) | [Workflow diagram](lab/part3/results/figures/workflow_graph.png) · [Baseline comparison](lab/part3/results/figures/baseline_comparison.png) · [Evaluation suite](lab/part3/evaluation/evaluation_suite.json) |
 
-### Part 3 — Adaptive Multi-Agent Fraud Detection
+## Assignment requirements and evidence
 
-**The optional Part 3 submission is available here:**
+**Part 1 — Airflow:** The scheduled `ieee_fraud_pipeline` DAG ingests related transaction and identity datasets, runs independent cleaning branches, merges on `TransactionID`, loads the processed data into PostgreSQL, and reads it back for fraud analysis. See [full execution guide](docs/IEEE_FRAUD_PROJECT.md) and the [Airflow UI screenshots](images/ieee_airflow_dag_success.png).
 
-**[View Part 3: Full Documentation, Setup Instructions, and Results](lab/part3/README.md)**
+**Part 2 — LangGraph:** The workflow uses the cleaned PostgreSQL data, iteratively plans/trains/evaluates fraud models, and records validation and holdout metrics. See the [agent workflow](lab/langgraph/ieee_fraud_graph.py), [agent graph](images/ieee_agent_graph.png), and [evaluation screenshot](images/ieee_agent_model_metrics.png).
 
-Part 3 includes:
+**Part 3 — Multi-Agent System:** Seven LangGraph nodes implement supervisor-controlled routing, data-quality validation, planning, training, evaluation, bounded recovery, and finalization. The [17-case evaluation suite](lab/part3/evaluation/evaluation_suite.json) records test inputs, expected behavior, scoring criteria, pass thresholds, and observed outcomes (**17/17 passed**). The [dashboard](lab/part3/dashboard.py) presents saved results locally; it is not a publicly hosted dashboard. See [Part 3 setup and reproducibility instructions](lab/part3/README.md).
 
-- Seven specialized LangGraph agents with dynamic routing
-- Adaptive model selection and failure recovery
-- Automated evaluation suite: **17/17 tests passed**
-- Comparison with Part 1 and Part 2 baselines
-- Interactive Streamlit dashboard
-- Workflow architecture and performance visualizations
+## Short comparison summary (Part 3)
 
-**Key results:** Part 3 achieved a holdout F1 score of **0.4561**, compared with **0.4404** for Part 2 and **0.1791** for the controlled Part 1 baseline. These systems use different model configurations, so the performance differences cannot be attributed solely to the multi-agent architecture.
+All three Part 3 comparison runs used the same exported 12,000-row IEEE-CIS dataset, random seed 42, and 20% holdout split. The fixed Part 1 training-task reproduction achieved a holdout F1 of **0.1791**; the original Part 2 LangGraph workflow achieved **0.4404**; and the Part 3 multi-agent workflow achieved **0.4561**. Part 2 and Part 3 each evaluated three model families and reached the validation F1 target of 0.30 in cycle three. The Part 3 contribution is explicit supervisor coordination, conditional routing, data-quality gating, and failure recovery, verified by automated workflow tests. **Interpretation limit:** the Part 1 comparison is a controlled reproduction of its fixed training task, not a rerun of the complete Airflow DAG; features and model hyperparameters differ between systems. Consequently, the observed F1 differences do not isolate the effect of the multi-agent architecture.
 
-For the complete implementation and reproducibility instructions, see the **[Part 3 README](lab/part3/README.md)**.
+**Reproduction note:** The exported `artifacts/ieee_fraud/agent_input.csv` is generated from the PostgreSQL output of Part 1 and is **not included in this repository**. To reproduce real-data training, prepare the original IEEE-CIS data and run Part 1 first, then export the data using the instructions in the [Part 3 README](lab/part3/README.md#reproduce-the-real-data-experiments). The committed results and figures can be inspected without rebuilding the database.
 
 ---
 
+# AutoML Research Lab: Student Setup (Original Classroom Template)
 
-# AutoML Research Lab: Student Setup
+> The sections below retain the upstream classroom setup guide. For this submission, use the Part 1/Part 2 project instructions linked above and the dedicated Part 3 README.
 
 ## IEEE-CIS Fraud Detection Extension
 
@@ -100,8 +96,8 @@ Do not install Airflow on the host. It runs only in Docker.
 ## One-time: clone and env
 
 ```bash
-git clone https://github.com/Kedar-V/automl-research-lab.git
-cd automl-research-lab
+git clone https://github.com/ZhihaoZhou0/IDS706-Airflow-LangGraph-Fraud-Detection.git
+cd IDS706-Airflow-LangGraph-Fraud-Detection
 ```
 
 ```bash

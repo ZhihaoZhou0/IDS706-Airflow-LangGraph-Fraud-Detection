@@ -458,3 +458,67 @@ The Part 3 submission includes:
 **Project:** IDS 706 — Data Engineering Systems
 
 **Component:** Optional Part 3 — Multi-Agent System with Adaptive Graph Workflows and Evaluation
+
+---
+
+## Reproduce the real-data experiments
+
+**Data dependency:** `artifacts/ieee_fraud/agent_input.csv` is intentionally not committed. The saved Part 3 JSON results and plots are included, but a fresh real-training run requires this CSV.
+
+1. Follow the [Part 1 dataset, PostgreSQL and Airflow instructions](../../docs/IEEE_FRAUD_PROJECT.md#how-to-run) to obtain the original IEEE-CIS transaction and identity files, populate PostgreSQL, and verify that `ieee_fraud_transactions` exists. The smaller `datasets/airflow/transactions.csv` classroom example is **not** a substitute for the IEEE-CIS fraud data.
+2. From the repository root, create `.env` from `.env.example` if necessary, then build the Gateway image and start the database (Docker Desktop must be running):
+
+   ```powershell
+   if (-not (Test-Path .env)) { Copy-Item .env.example .env }
+   docker compose -f infra/docker-compose.yml --env-file .env up -d analytics-db
+   docker compose -f infra/docker-compose.yml --env-file .env build gateway
+   ```
+
+   The first command creates `.env` only if missing; it does not overwrite existing credentials. Building the image does not require rerunning the Airflow DAG.
+
+3. **Only after Part 1 has populated PostgreSQL**, export the 12,000-row stratified model input using the existing exporter, without rerunning the Part 2 graph:
+
+   ```powershell
+   docker compose -f infra/docker-compose.yml --env-file .env run --rm --no-deps -w /repo -e PYTHONPATH=/repo:/app --entrypoint python gateway -c "from test_ieee_agent import export_postgres_data; export_postgres_data()"
+   ```
+
+   This exporter reads `ieee_fraud_transactions`, retains the fraud target and recognized features, and writes `artifacts/ieee_fraud/agent_input.csv`. **It overwrites that CSV if it already exists**; back it up first if you want to preserve a previous experimental input. It does not retrain models or overwrite `agent_results.json`.
+
+4. Confirm that the file exists and has the expected schema and class distribution:
+
+   ```powershell
+   Test-Path artifacts/ieee_fraud/agent_input.csv
+   python -c "import pandas as pd; d=pd.read_csv('artifacts/ieee_fraud/agent_input.csv'); print('rows:',len(d),'columns:',len(d.columns)); print(d['isFraud'].value_counts().to_dict())"
+   ```
+
+   The saved comparison used **12,000 rows**, **17 columns**, **420 fraud cases**, and **11,580 non-fraud cases**. A different database snapshot or preprocessing version may produce different results.
+
+5. To run the actual Part 3 graph in real mode without modifying saved result files, use the existing Gateway image and print a compact summary:
+
+   ```powershell
+   docker compose -f infra/docker-compose.yml --env-file .env run --rm --no-deps -w /repo -e PYTHONPATH=/repo:/app --entrypoint python gateway -c 'from lab.part3.multi_agent_graph import build_graph; r=build_graph().invoke({"mode":"real","data_path":"artifacts/ieee_fraud/agent_input.csv","seed":42,"holdout_frac":0.2,"max_cycles":3,"target_f1":0.3,"max_retries":2,"history":[],"execution_trace":[]},config={"recursion_limit":50}); print("stop:",r.get("stop_reason"),"best validation F1:",r.get("best_val_f1"),"holdout:",r.get("holdout_metrics"))'
+   ```
+
+   This command trains models in memory and prints metrics. It does **not** write to the committed baseline JSON files. On Windows PowerShell, if the shell changes quoting of the `-c` argument, run the same Python expression in a temporary `.py` file inside the container instead.
+
+6. The [Part 1 controlled baseline script](evaluation/part1_baseline.py) also reads this exported CSV. **Running it overwrites** `results/part1_baseline.json`, so only rerun it when you intend to refresh the recorded baseline. The committed [Part 2](results/part2_baseline.json) and [Part 3](results/part3_baseline.json) results are available for inspection without any database access.
+
+### Reproduce the evaluation and dashboard without the real-data CSV
+
+The **17 workflow tests** include deterministic simulation scenarios and a missing-data safety case. They do not require the 12,000-row export. Follow [Section 8](#8-running-automated-tests) for the Docker pytest command, and [Section 7](#7-interactive-streamlit-dashboard) for the Streamlit dashboard. The dashboard reads committed JSON and PNG artifacts and does not train models.
+
+## Assignment requirement checklist
+
+| Instructor requirement | Evidence |
+|---|---|
+| Distinct agents and graph representation | [Graph implementation](multi_agent_graph.py), [exported workflow diagram](results/figures/workflow_graph.png) |
+| Adaptive selection, routing, and retries | [Planner](planner.py), [Recovery Agent](multi_agent_graph.py), [tests](evaluation/test_multi_agent_graph.py) |
+| Intermediate and final output evaluation | [Validation history and holdout results](results/part3_baseline.json), [validation trend](results/figures/validation_f1_trend.png) |
+| Per-case inputs, expected behavior, scoring, threshold | [17 structured evaluation cases](evaluation/evaluation_suite.json) |
+| Effectiveness of coordination | [Routing and recovery tests](evaluation/test_planner.py), [evaluation summary](results/evaluation_summary.json) |
+| Comparison with both demonstrated baselines | [Three-system results](results/figures/baseline_comparison.png), [Part 1 reproduction](evaluation/part1_baseline.py), [Part 2 original workflow](../langgraph/ieee_fraud_graph.py) |
+| Repository, setup, graph, evaluation, dashboard | [This README](README.md), [graph](results/workflow_graph.mmd), [evaluation](evaluation/evaluation_suite.json), [dashboard](dashboard.py) |
+
+### Submission summary
+
+The fixed training-task reproduction (Part 1) achieved holdout F1 **0.1791**, the existing simple LangGraph loop (Part 2) achieved **0.4404**, and the supervisor-based multi-agent graph (Part 3) achieved **0.4561**, on a shared 12,000-row export with seed 42 and a 20% holdout. The multi-agent graph adds explicit data-quality checks, dynamic agent routing, bounded recovery, and terminal holdout evaluation. Its **17/17 automated workflow tests passed**. The model families and configurations are not identical, so these scores describe observed outcomes rather than proving an architectural performance gain. The fixed Part 1 baseline is a controlled reproduction of its model-training task, not the full Airflow DAG.
